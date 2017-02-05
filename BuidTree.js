@@ -45,91 +45,51 @@ function startBuilding(){
 
     buildTree( getChildsOf(0));
 
-    $(".treeClick").css({"color": "red"});
+    ch = getLevel2();
+    for(var i=0; i<ch.length; i++){
+        
+        var pid = ch[i].id;
+        $("#"+pid+">ul").append( addNewCategory());
+    }
+
+    $(".treeClick").css({"color": "green"});
+    $(".treeNewCat").css({"color": "red"});
     
-    // for(var i=0; i<finalNodes.length; i++){
-
-    //     $("#"+finalNodes[i].parentId+">ul").append( addNewCategory());
-    // }
-
     $(".treeClose").click(openCloseNode);
     $(".treeClick").click(onClickE);
+    $(".treeNewCat").click(newCat);
 }
 
 function buildTree(nodes){
 
-    var currNode;
-    var childs;
-    var addLine;
-
     for(var i=0; i<nodes.length; i++){    
         
         currNode = nodes[i];
-        childs = getChildsOf( currNode.id);
+        parentId = nodes[i].parentId;
+        childs   = getChildsOf( currNode.id);
 
-        // if(childs.length == 0){
+        addUlToLiNode(parentId);
+
+        ulNode = $("#" + parentId + ">ul");
+        
+        if(childs.length > 0){
             
-        //     $("#"+currNode.parentId+">ul").append( toHtmlBottomNode(currNode));            
-        // }else{
-            
-        //     $("#"+currNode.parentId).append( "<ul></ul>");
-        //     $("#"+currNode.parentId+">ul").append( toHtmlMidNode(currNode));
-            
-        //     buildTree(childs);
-        // }
-
-        // var liNode = $("#"+currNode.parentId);
-        // var ulNode = $("#" + currNode.parentId + ">ul");
-        var liNode = $("#"+currNode.parentId);
-        var ulNode = $("#" + currNode.parentId + ">ul");
-
-        if(ulNode.length == 0){ //liNode.find(ul)...
-            liNode.append("<ul></ul>");
-        }
-
-        ulNode = $("#" + currNode.parentId + ">ul");
-
-
-        if(childs.length == 0){
-            
-            ulNode.append(toHtmlBottomNode(currNode));
-
-            // if( $("#{0}>ul".format(currNode.parentId)).length>0){
-
-            //     $("#"+currNode.parentId+">ul").append( toHtmlBottomNode(currNode));
-            // }else{
-
-            //     $("#"+currNode.parentId).append( "<ul>" + toHtmlBottomNode(currNode) + "</ul>");
-            // }
-            
-        }else{
-            
-            // var liNode = $("#"+currNode.parentId);
-            // var ulNode = $("#" + currNode.parentId + ">ul");
-
-            // if(ulNode.length == 0){ //liNode.find(ul)...
-            //     liNode.append("<ul></ul>");
-            // }
-
-            // ulNode = $("#" + currNode.parentId + ">ul");
-
-            ulNode.append( toHtmlMidNode(currNode));
-
-            // if(ulNode.length > 0){
-            //     ulNode.append( toHtmlMidNode(currNode, false));
-            // } else{
-            //     liNode.append( toHtmlMidNode(currNode, true));
-            // }
-            // if( $("#{0}>ul".format(currNode.parentId)).length>0){
-
-            //     $("#"+currNode.parentId+">ul").append( toHtmlMidNode(currNode));
-            // }else{
-
-            //     $("#"+currNode.parentId).append( "<ul>" + toHtmlMidNode(currNode) + "</ul>");
-            // }
+            ulNode.append( addMidNode(currNode));
             
             buildTree(childs);
+        }else{
+
+            ulNode.append( addBottomNode(currNode));
         }
+    }
+}
+
+function addUlToLiNode(parentId){
+
+    var liNode = $("#"+parentId);
+        
+    if(liNode.has("ul").length == 0){
+        liNode.append("<ul></ul>");
     }
 }
 
@@ -138,14 +98,26 @@ function addNewCategory(){
     return "<li class='treeNewCat'><span>New Category</span></li>";
 }
 
-function toHtmlMidNode(node){
+function addMidNode(node){
 
     return "<li class='treeClose' id='{0}' parentId='{1}'><span>{2}</span></li>".format(node.id, node.parentId, node.name);
 }
 
-function toHtmlBottomNode(node){
+function addBottomNode(node){
 
     return "<li class='treeClick' id='{0}' parentId='{1}'><span>{2}</span></li>".format(node.id, node.parentId, node.name);
+}
+
+function getLevel2(){
+
+    var level2 = [];
+    var top = getChildsOf(0);
+    
+    for(var i=0; i<top.length; i++){
+        level2 = level2.concat(getChildsOf(top[i].id));
+    }
+
+    return level2;
 }
 
 function getChildsOf(parent){
@@ -185,6 +157,11 @@ function onClickE(e){
 
     alert(out);
 
+}
+
+function newCat(e){
+    e.stopPropagation();
+    alert("Add new Category");
 }
 
 function addCSS(){
