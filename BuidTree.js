@@ -17,7 +17,7 @@ tree = [
     new node(16, 3, "sub 3"),
     new node(17, 4, "sub 1"),
     new node(18, 4, "sub 2"),
-    new node(19, 4, "sub 3"),
+    new node(19, 4, "sub 3 xxxxxxxxxxxxx"),
     new node(20, 8, "sub 1"),
     new node(21, 8, "sub 2"),
     new node(22, 8, "sub 3"),
@@ -45,12 +45,7 @@ function startBuilding(){
 
     buildTree( getChildsOf(0));
 
-    ch = getLevel2();
-    for(var i=0; i<ch.length; i++){
-        
-        var pid = ch[i].id;
-        $("#"+pid+">ul").append( addNewCategory());
-    }
+    addNewCategoryLink();
 
     $(".treeClick").css({"color": "green"});
     $(".treeNewCat").css({"color": "red"});
@@ -58,6 +53,11 @@ function startBuilding(){
     $(".treeClose").click(openCloseNode);
     $(".treeClick").click(onClickE);
     $(".treeNewCat").click(newCat);
+
+}
+
+function modalWindow(){
+
 }
 
 function buildTree(nodes){
@@ -84,6 +84,16 @@ function buildTree(nodes){
     }
 }
 
+function addNewCategoryLink(){
+
+    items = getLevel2Items();
+
+    for(var i=0; i<items.length; i++){
+
+        $("#"+items[i].id+">ul").append( addNewCategory());
+    }
+}
+
 function addUlToLiNode(parentId){
 
     var liNode = $("#"+parentId);
@@ -95,7 +105,7 @@ function addUlToLiNode(parentId){
 
 function addNewCategory(){
 
-    return "<li class='treeNewCat'><span>New Category</span></li>";
+    return "<li class='treeNewCat'><span>Add New Category</span></li>";
 }
 
 function addMidNode(node){
@@ -108,13 +118,13 @@ function addBottomNode(node){
     return "<li class='treeClick' id='{0}' parentId='{1}'><span>{2}</span></li>".format(node.id, node.parentId, node.name);
 }
 
-function getLevel2(){
+function getLevel2Items(){
 
     var level2 = [];
-    var top = getChildsOf(0);
+    var topItems = getChildsOf(0);
     
-    for(var i=0; i<top.length; i++){
-        level2 = level2.concat(getChildsOf(top[i].id));
+    for(var i=0; i<topItems.length; i++){
+        level2 = level2.concat(getChildsOf(topItems[i].id));
     }
 
     return level2;
@@ -160,7 +170,9 @@ function onClickE(e){
 }
 
 function newCat(e){
+
     e.stopPropagation();
+
     alert("Add new Category");
 }
 
@@ -181,3 +193,58 @@ String.prototype.format = function() {
   
     return formatted;
 };
+
+
+$(document).ready(function(){
+    
+    $('#mod').click(function(event){
+
+        event.preventDefault();
+
+        $('#overlay').fadeIn(400, 
+            function(){ 
+                $('#modal_form') 
+                .css('display', 'block')
+                .animate({opacity: 1, top: '50%'}, 200);
+        });
+    });
+
+    $('#modal_close, #overlay').click( function(){ // лoвим клик пo крестику или пoдлoжке
+		
+        $('#modal_form')
+        	.animate({opacity: 0, top: '45%'}, 200,  // плaвнo меняем прoзрaчнoсть нa 0 и oднoвременнo двигaем oкнo вверх
+				function(){ // пoсле aнимaции
+					$(this).css('display', 'none'); // делaем ему display: none;
+					$('#overlay').fadeOut(400); // скрывaем пoдлoжку
+				}
+			);
+	});
+});
+
+// function showModal(){
+	
+//     $('#mod').click(function(event){
+
+//         event.preventDefault();
+
+//         $('#overlay').fadeIn(400, 
+//             function(){ 
+//                 $('#modal_form') 
+//                 .css('display', 'block')
+//                 .animate({opacity: 1, top: '50%'}, 200);
+//         });
+//     });
+// }
+
+// function hideModal(){
+    
+//     $('#modal_close, #overlay').click( function(){ // лoвим клик пo крестику или пoдлoжке
+// 		$('#modal_form')
+// 			.animate({opacity: 0, top: '45%'}, 200,  // плaвнo меняем прoзрaчнoсть нa 0 и oднoвременнo двигaем oкнo вверх
+// 				function(){ // пoсле aнимaции
+// 					$(this).css('display', 'none'); // делaем ему display: none;
+// 					$('#overlay').fadeOut(400); // скрывaем пoдлoжку
+// 				}
+// 			);
+// 	});
+// }
