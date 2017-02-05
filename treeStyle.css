@@ -1,0 +1,7 @@
+.treeClose span:hover {
+    font-weight: bold;
+}
+        
+.treeClose span {
+    cursor: pointer;
+}

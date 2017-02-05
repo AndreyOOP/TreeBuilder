@@ -1,0 +1,4 @@
+npm install --save @types/jquery - jquery intellisense
+
+1) use id & parent id as attributes
+2) save into attribute categories separated by * or 3 attributes c1, c2, c3
